@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@android:color/holo_red_dark"
-    tools:context=".activities.MainActivity">
+    android:orientation="vertical"
+    tools:context=".activities.GameActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,52 +22,52 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="18sp"
             android:gravity="center_vertical"
-            android:textStyle="bold"
+            android:text="Score:"
             android:textColor="@color/colorTextNormal"
-            android:text="Score:" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/currentScoreFieldTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="18sp"
-            android:gravity="center_vertical"
-            android:textStyle="bold"
-            android:textColor="@color/colorTextInverse"
-            android:background="@color/colorPrimary"
-            android:textAlignment="center"
-            android:padding="10sp"
-            android:layout_marginRight="60sp"
             android:layout_marginEnd="60sp"
-            android:text="999" />
+            android:layout_marginRight="60sp"
+            android:layout_weight="1"
+            android:background="@color/colorPrimary"
+            android:gravity="center_vertical"
+            android:padding="10sp"
+            android:text="999"
+            android:textAlignment="center"
+            android:textColor="@color/colorTextInverse"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/bestScoreLabelTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="18sp"
             android:gravity="center_vertical"
-            android:textStyle="bold"
+            android:text="Record:"
             android:textColor="@color/colorTextNormal"
-            android:text="Record:" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/bestScoreFieldTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="18sp"
-            android:gravity="center_vertical"
-            android:textStyle="bold"
-            android:textColor="@color/colorTextInverse"
             android:background="@color/colorPrimary"
-            android:textAlignment="center"
+            android:gravity="center_vertical"
             android:padding="10sp"
-            android:text="999" />
+            android:text="999"
+            android:textAlignment="center"
+            android:textColor="@color/colorTextInverse"
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <com.frixs.zcu_kiv_mkz_seminar.views.GameView
@@ -75,11 +75,12 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_margin="15dp"
-        android:layout_marginRight="15dp"
         android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 </LinearLayout>

@@ -1,6 +1,5 @@
 package com.frixs.zcu_kiv_mkz_seminar.views;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
