@@ -5,82 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/holo_red_dark"
-    android:orientation="vertical"
     tools:context=".activities.GameActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="0dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/currentScoreLabelTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="Score:"
-            android:textColor="@color/colorTextNormal"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/currentScoreFieldTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="60sp"
-            android:layout_marginRight="60sp"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:gravity="center_vertical"
-            android:padding="10sp"
-            android:text="999"
-            android:textAlignment="center"
-            android:textColor="@color/colorTextInverse"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/bestScoreLabelTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="Record:"
-            android:textColor="@color/colorTextNormal"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/bestScoreFieldTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/colorPrimary"
-            android:gravity="center_vertical"
-            android:padding="10sp"
-            android:text="999"
-            android:textAlignment="center"
-            android:textColor="@color/colorTextInverse"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <com.frixs.zcu_kiv_mkz_seminar.views.GameView
-        android:id="@+id/gameView"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <include layout="@layout/content_game" />
 
 </LinearLayout>

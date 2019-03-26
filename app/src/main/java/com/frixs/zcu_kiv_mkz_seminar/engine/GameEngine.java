@@ -30,6 +30,10 @@ public class GameEngine {
         addWalls();
     }
 
+    /**
+     * Call snake update position according to the direction.
+     * Check wall collisions.
+     */
     public void update() {
         switch (currentDirection) {
             case North:
@@ -47,19 +51,33 @@ public class GameEngine {
         }
 
         // Check Wall collisions.
-        for (Coordinate c :
-                walls) {
-            if (snake.get(0).equals(c)) {
-                currentGameState = GameState.GameOver;
-            }
+        if (checkCollisions()) {
+            currentGameState = GameState.GameOver;
         }
     }
 
     /**
-     * Get tile type map.
-     * @return  Tile type map.
+     * Check if Snake collides with the walls.
+     *
+     * @return TRUE if Snake collides with the walls, FALSE if not.
      */
-    public TileType[][] getMap() {
+    private boolean checkCollisions() {
+        for (Coordinate c :
+                walls) {
+            if (snake.get(0).equals(c)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get tile type map.
+     *
+     * @return Tile type map.
+     */
+    public TileType[][] getTileMap() {
         TileType[][] map = new TileType[mapWidth][mapHeight];
 
         // Set default TileType to all map fields.
@@ -85,6 +103,12 @@ public class GameEngine {
         return map;
     }
 
+    /**
+     * Update snake position.
+     *
+     * @param x Coord X
+     * @param y Coord Y
+     */
     private void updateSnake(int x, int y) {
         for (int i = snake.size() - 1; i > 0; --i) {
             snake.get(i).setX(snake.get(i - 1).getX());
@@ -96,7 +120,7 @@ public class GameEngine {
     }
 
     /**
-     * TODO
+     * Creates Snake on the default position.
      */
     private void addSnake() {
         int xc = mapWidth / 2;
@@ -107,7 +131,7 @@ public class GameEngine {
         snake.add(new Coordinate(xc + 2, yc));
         snake.add(new Coordinate(xc + 1, yc));
         snake.add(new Coordinate(xc + 0, yc));
-        snake.add(new Coordinate(xc - 1 , yc));
+        snake.add(new Coordinate(xc - 1, yc));
     }
 
     /**

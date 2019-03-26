@@ -14,10 +14,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        moveToTheGame(null);
+        startTheGame(null);
     }
 
-    public void moveToTheGame(View v) {
+    public void startTheGame(View v) {
         Intent i = new Intent(this, GameActivity.class);
         startActivity(i);
     }
