@@ -3,6 +3,7 @@
     <color name="colorPrimary">#FFBB33</color>
     <color name="colorPrimaryDark">#000</color>
     <color name="colorAccent">#d81b1b</color>
+    <color name="colorAccentL2">#aa0606</color>
 
     <color name="colorTileWall">#FFBB33</color>
     <color name="colorTileBackground">#E2F4AB</color>

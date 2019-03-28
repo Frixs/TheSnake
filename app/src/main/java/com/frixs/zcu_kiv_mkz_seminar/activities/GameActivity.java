@@ -3,6 +3,7 @@ package com.frixs.zcu_kiv_mkz_seminar.activities;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.frixs.zcu_kiv_mkz_seminar.R;
@@ -139,6 +140,46 @@ public class GameActivity extends AppCompatActivity {
      */
     private void onGameCountdown(String s) {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * On click event BTN.
+     * @param view
+     */
+    public void onClickControlUpBTN(View view) {
+        Toast.makeText(this, "CONTROL UP BTN", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * On click event BTN.
+     * @param view
+     */
+    public void onClickControlRightBTN(View view) {
+        Toast.makeText(this, "CONTROL RIGHT BTN", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * On click event BTN.
+     * @param view
+     */
+    public void onClickControlDownBTN(View view) {
+        Toast.makeText(this, "CONTROL DOWN BTN", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * On click event BTN.
+     * @param view
+     */
+    public void onClickControlLeftBTN(View view) {
+        Toast.makeText(this, "CONTROL LEFT BTN", Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * On click event BTN.
+     * @param view
+     */
+    public void onClickLeaveBTN(View view) {
+        Toast.makeText(this, "LEAVE BTN", Toast.LENGTH_SHORT).show();
     }
 
     public void setGameTick(long gameTick) {
