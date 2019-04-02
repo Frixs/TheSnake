@@ -3,15 +3,17 @@ package com.frixs.zcu_kiv_mkz_seminar.activities;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
 import com.frixs.zcu_kiv_mkz_seminar.R;
 import com.frixs.zcu_kiv_mkz_seminar.engine.GameEngine;
+import com.frixs.zcu_kiv_mkz_seminar.enums.Direction;
 import com.frixs.zcu_kiv_mkz_seminar.enums.GameState;
 import com.frixs.zcu_kiv_mkz_seminar.views.GameView;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements View.OnTouchListener {
 
     private GameEngine gameEngine;
     private GameView gameView;
@@ -30,6 +32,9 @@ public class GameActivity extends AppCompatActivity {
     /** Countdown iteration recorded. */
     private int countdownIterCounter = countdownIter;
 
+    /** Previous positions. */
+    private float prevPosX, prevPosY;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +42,8 @@ public class GameActivity extends AppCompatActivity {
 
         // Initialize the game activity.
         initialize();
+
+        gameView.setOnTouchListener(this);
 
         // Start the game.
         start();
@@ -147,7 +154,7 @@ public class GameActivity extends AppCompatActivity {
      * @param view
      */
     public void onClickControlUpBTN(View view) {
-        Toast.makeText(this, "CONTROL UP BTN", Toast.LENGTH_SHORT).show();
+        gameEngine.setDirection(Direction.North);
     }
 
     /**
@@ -155,7 +162,7 @@ public class GameActivity extends AppCompatActivity {
      * @param view
      */
     public void onClickControlRightBTN(View view) {
-        Toast.makeText(this, "CONTROL RIGHT BTN", Toast.LENGTH_SHORT).show();
+        gameEngine.setDirection(Direction.East);
     }
 
     /**
@@ -163,7 +170,7 @@ public class GameActivity extends AppCompatActivity {
      * @param view
      */
     public void onClickControlDownBTN(View view) {
-        Toast.makeText(this, "CONTROL DOWN BTN", Toast.LENGTH_SHORT).show();
+        gameEngine.setDirection(Direction.South);
     }
 
     /**
@@ -171,7 +178,7 @@ public class GameActivity extends AppCompatActivity {
      * @param view
      */
     public void onClickControlLeftBTN(View view) {
-        Toast.makeText(this, "CONTROL LEFT BTN", Toast.LENGTH_SHORT).show();
+        gameEngine.setDirection(Direction.West);
     }
 
     /**
@@ -180,6 +187,45 @@ public class GameActivity extends AppCompatActivity {
      */
     public void onClickLeaveBTN(View view) {
         Toast.makeText(this, "LEAVE BTN", Toast.LENGTH_SHORT).show();
+        // TODO;
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_UP:
+                float newPosX = event.getX();
+                float newPosY = event.getY();
+
+                // Calculate where we swiped.
+                if (Math.abs(newPosX - prevPosX) > Math.abs(newPosY - prevPosY)) {
+                    // LEFT - RIGHT directions.
+                    if (newPosX > prevPosX) {
+                        // RIGHT.
+                        gameEngine.setDirection(Direction.East);
+                    } else {
+                        // LEFT.
+                        gameEngine.setDirection(Direction.West);
+                    }
+                } else {
+                    // UP - DOWN directions.
+                    if (newPosY > prevPosY) {
+                        // DOWN.
+                        gameEngine.setDirection(Direction.South);
+                    } else {
+                        // UP.
+                        gameEngine.setDirection(Direction.North);
+                    }
+                }
+
+                break;
+            case MotionEvent.ACTION_DOWN:
+                prevPosX = event.getX();
+                prevPosY = event.getY();
+                break;
+        }
+
+        return true;
     }
 
     public void setGameTick(long gameTick) {

@@ -57,6 +57,16 @@ public class GameEngine {
     }
 
     /**
+     * Set direction for the next move.
+     * @param newDirection     The Direction.
+     */
+    public void setDirection(Direction newDirection) {
+        if (Math.abs(newDirection.ordinal() - currentDirection.ordinal()) % 2 == 1) {
+            currentDirection = newDirection;
+        }
+    }
+
+    /**
      * Check if Snake collides with the walls.
      *
      * @return TRUE if Snake collides with the walls, FALSE if not.
