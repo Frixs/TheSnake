@@ -1,10 +1,14 @@
 package com.frixs.zcu_kiv_mkz_seminar.engine;
 
 import com.frixs.zcu_kiv_mkz_seminar.classes.Coordinate;
+import com.frixs.zcu_kiv_mkz_seminar.classes.Fruit;
+import com.frixs.zcu_kiv_mkz_seminar.classes.fruit.Apple;
 import com.frixs.zcu_kiv_mkz_seminar.enums.Direction;
 import com.frixs.zcu_kiv_mkz_seminar.enums.GameState;
 import com.frixs.zcu_kiv_mkz_seminar.enums.TileType;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,7 +19,7 @@ public class GameEngine {
 
     private List<Coordinate> walls = new ArrayList<>();
     private List<Coordinate> snake = new ArrayList<>();
-    private List<Coordinate> fruit = new ArrayList<>();
+    private List<Fruit> fruit = new ArrayList<>();
 
     private Direction currentDirection = Direction.East;
     private Direction desiredDirection = currentDirection;
@@ -24,8 +28,17 @@ public class GameEngine {
 
     /** says if I can expand Snake's tail in the next update tick. */
     private boolean expandSnakeTail = false;
+    /** Game score counter. */
+    private int score = 0;
+    /** Game tick in milliseconds. */
+    private int gameTick = 0;
+    /** Range in which the spawn chance is calculated. */
+    private float fruitSpawnWeight = 0;
+    /** Spawnable fruit - useless dummy fruit. */
+    private Fruit[] spawnableFruit = null;
 
     public GameEngine() {
+        calculateDifficulty();
     }
 
     /**
@@ -68,6 +81,40 @@ public class GameEngine {
         }
 
         solveFruitCollisions();
+
+        calculateDifficulty();
+    }
+
+    private void calculateDifficulty() {
+        switch (score) {
+            case 0:
+                gameTick = 600;
+                break;
+            case 2:
+                gameTick = 550;
+                break;
+            case 4:
+                gameTick = 500;
+                break;
+            case 8:
+                gameTick = 450;
+                break;
+            case 16:
+                gameTick = 400;
+                break;
+            case 32:
+                gameTick = 366;
+                break;
+            case 64:
+                gameTick = 333;
+                break;
+            case 128:
+                gameTick = 300;
+                break;
+            case 256:
+                gameTick = 200;
+                break;
+        }
     }
 
     /**
@@ -132,10 +179,10 @@ public class GameEngine {
      * Check Fruit collisions.
      * @return  Collider or NUL if not collides.
      */
-    private Coordinate checkFruitCollisions(Coordinate c) {
-        for (Coordinate f :
+    private Fruit checkFruitCollisions(Coordinate c) {
+        for (Fruit f :
                 fruit) {
-            if (f.equals(c)) {
+            if (f.getCoordinate().equals(c)) {
                 return f;
             }
         }
@@ -147,11 +194,15 @@ public class GameEngine {
      * Check fruit collisions.
      */
     private void solveFruitCollisions() {
-        Coordinate fruitToRemove = null;
+        Fruit fruitToRemove = null;
         expandSnakeTail = false;
 
         if ((fruitToRemove = checkFruitCollisions(getSnakeHead())) != null) {
-            expandSnakeTail = true;
+            if (fruitToRemove.getTileType() == TileType.FruitApple) {
+                expandSnakeTail = true;
+                score++;
+            }
+            // TODO: Add functionality for the rest of the items.
         }
 
         if (fruitToRemove != null) {
@@ -187,10 +238,14 @@ public class GameEngine {
                 walls) {
             map[wall.getX()][wall.getY()] = TileType.Wall;
         }
-//TODO
-        for (Coordinate c :
+
+        for (Fruit f :
                 fruit) {
-            map[c.getX()][c.getY()] = TileType.Apple;
+            try {
+                map[f.getCoordinate().getX()][f.getCoordinate().getY()] = f.getTileType();
+            } catch (ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
         }
 
         return map;
@@ -256,6 +311,58 @@ public class GameEngine {
      * Add fruit to the game.
      */
     private void addFruit() {
+        fruit.add(new Apple(getFreeCoordination()));
+
+        spawnSpecialFruit();
+    }
+
+    /**
+     * Spawn special fruit.
+     */
+    private void spawnSpecialFruit() {
+        Random rn = new Random();
+
+        if (fruitSpawnWeight <= 0f) {
+            calculateSpawnChanceValues();
+        }
+
+        float chance = rn.nextFloat() * fruitSpawnWeight;
+        float top = 0f;
+
+        for (int i = 0; i < spawnableFruit.length; i++) {
+            top += spawnableFruit[i].getSpawnWeight();
+            if (chance < top) {
+                // Spawn the item.
+                Fruit newFruit = null;
+
+                try {
+                    Class clazz = Class.forName(spawnableFruit[i].getClass().getName());
+                    Constructor constructor = clazz.getConstructor(Coordinate.class);
+                    newFruit = (Fruit) constructor.newInstance(getFreeCoordination());
+                    fruit.add(newFruit);
+
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+
+                return;
+            }
+        }
+    }
+
+    /**
+     * Get free coordination in the game map.
+     * @return      Free Coordination.
+     */
+    private Coordinate getFreeCoordination() {
         Coordinate coord = null;
         boolean unableToSpawn;
         Random rn = new Random();
@@ -277,14 +384,37 @@ public class GameEngine {
             }
         } while (unableToSpawn);
 
-        fruit.add(coord);
+        return coord;
+    }
+
+    /**
+     * Set spawn chance range and spawnable fruit.
+     */
+    private void calculateSpawnChanceValues() {
+        Fruit[] list = Fruit.getFruitList();
+        float total = 0;
+
+        for (int i = 0; i < list.length; i++) {
+            total += list[i].getSpawnWeight(); // Float is 6 digit at max.
+        }
+
+        fruitSpawnWeight = total;
+        spawnableFruit = list;
     }
 
     private Coordinate getSnakeHead() {
         return snake.get(0);
     }
 
+    public int getScore() {
+        return score;
+    }
+
     public GameState getCurrentGameState() {
         return currentGameState;
+    }
+
+    public int getGameTick() {
+        return gameTick;
     }
 }

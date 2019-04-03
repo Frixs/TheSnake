@@ -1,5 +1,7 @@
 package com.frixs.zcu_kiv_mkz_seminar.activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.frixs.zcu_kiv_mkz_seminar.R;
+import com.frixs.zcu_kiv_mkz_seminar.classes.SharedData;
 import com.frixs.zcu_kiv_mkz_seminar.engine.GameEngine;
 import com.frixs.zcu_kiv_mkz_seminar.enums.Direction;
 import com.frixs.zcu_kiv_mkz_seminar.enums.GameState;
@@ -23,7 +26,7 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
     private final Handler handler = new Handler();
 
     /** Game tick delay */
-    private long gameTick = 600;
+    private long gameTick;
 
     /** Countdown tick. */
     private final long countdownTick = 1000;
@@ -37,8 +40,8 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
     /** Previous positions. */
     private float prevPosX, prevPosY;
 
-    private TextView currentScore;
-    private TextView bestScore;
+    private TextView currentScoreTV;
+    private TextView bestScoreTV;
     private Button restartBTN;
 
     @Override
@@ -74,15 +77,22 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
         gameView.animate().alpha(1.0f);
 
         // Get layout items.
-        currentScore = (TextView) findViewById(R.id.currentScoreFieldTV);
-        bestScore = (TextView) findViewById(R.id.bestScoreFieldTV);
+        currentScoreTV = (TextView) findViewById(R.id.currentScoreFieldTV);
+        bestScoreTV = (TextView) findViewById(R.id.bestScoreFieldTV);
         restartBTN = (Button) findViewById(R.id.restartBTN);
+
+        // Initialize score to default values.
+        currentScoreTV.setText("0");
+        SharedPreferences settigns = getSharedPreferences(SharedData._ROOT, Context.MODE_PRIVATE);
+        int highScore = settigns.getInt(SharedData.BEST_SCORE, 0);
+        bestScoreTV.setText("" + highScore);
     }
 
     /**
      * Start the game activity.
      */
     private void start() {
+        gameTick = gameEngine.getGameTick();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -130,6 +140,7 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
 
                 // Keep updating if the game is running.
                 if (gameEngine.getCurrentGameState() == GameState.Running) {
+                    gameTick = gameEngine.getGameTick();
                     handler.postDelayed(this, gameTick);
                 }
 
@@ -141,6 +152,12 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
                 // Update map and redraw.
                 gameView.setViewMap(gameEngine.getTileMap());
                 gameView.invalidate();
+
+                // Update score.
+                currentScoreTV.setText("" + gameEngine.getScore());
+                if (Integer.parseInt((String) bestScoreTV.getText()) < gameEngine.getScore()) {
+                    bestScoreTV.setText("" + gameEngine.getScore());
+                }
             }
         }, gameTick);
     }
@@ -151,6 +168,16 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
     private void onGameOver() {
         Toast.makeText(this, "GAME OVER", Toast.LENGTH_SHORT).show();
 
+        // Save the score.
+        SharedPreferences settigns = getSharedPreferences(SharedData._ROOT, Context.MODE_PRIVATE);
+        int highScore = settigns.getInt(SharedData.BEST_SCORE, 0);
+        if (gameEngine.getScore() > highScore) {
+            SharedPreferences.Editor editor = settigns.edit();
+            editor.putInt(SharedData.BEST_SCORE, gameEngine.getScore());
+            editor.apply();
+        }
+
+        // Show option to restart the game.
         restartBTN.setVisibility(View.VISIBLE);
     }
 
@@ -247,9 +274,5 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
         }
 
         return true;
-    }
-
-    public void setGameTick(long gameTick) {
-        this.gameTick = gameTick;
     }
 }

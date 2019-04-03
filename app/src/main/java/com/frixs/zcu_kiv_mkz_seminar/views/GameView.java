@@ -2,7 +2,6 @@ package com.frixs.zcu_kiv_mkz_seminar.views;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.AttributeSet;
@@ -34,7 +33,6 @@ public class GameView extends View {
             return;
         }
 
-
         // Set view resolution.
         ViewGroup.LayoutParams params = this.getLayoutParams();
         params.height = canvas.getWidth();
@@ -46,12 +44,12 @@ public class GameView extends View {
 
         // Vars.
         int squarePadding = 0;
-        float circleSize = Math.min(tileSizeX, tileSizeY) / 2;
 
         // Set map background.
         mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorTileBackground, null));
         canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), mPaint);
 
+        // Set map colors and size.
         for (int x = 0; x < viewMap.length; x++) {
             for (int y = 0; y < viewMap[0].length; y++) {
                 squarePadding = 2; // default;
@@ -66,13 +64,23 @@ public class GameView extends View {
                         mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorTileWall, null));
                         break;
                     case SnakeHead:
-                        mPaint.setColor(Color.RED);
+                        mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorSnakeHead, null));
                         break;
                     case SnakeTail:
-                        mPaint.setColor(Color.GREEN);
+                        mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorSnakeTail, null));
                         break;
-                    case Apple:
-                        mPaint.setColor(Color.RED);
+                    // FRUIT.
+                    case FruitApple:
+                        mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorFruitApple, null));
+                        break;
+                    case FruitRaspberry:
+                        mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorFruitRaspberry, null));
+                        break;
+                    case FruitBlackberry:
+                        mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorFruitBlackberry, null));
+                        break;
+                    case FruitCoconut:
+                        mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorFruitCoconut, null));
                         break;
                 }
 

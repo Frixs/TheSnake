@@ -30,7 +30,7 @@
 
         <TextView
             android:id="@+id/currentScoreFieldTV"
-            android:layout_width="wrap_content"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="60sp"
             android:layout_marginRight="60sp"
@@ -57,7 +57,7 @@
 
         <TextView
             android:id="@+id/bestScoreFieldTV"
-            android:layout_width="wrap_content"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/colorPrimary"

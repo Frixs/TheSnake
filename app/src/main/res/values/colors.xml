@@ -11,4 +11,11 @@
 
     <color name="colorTextNormal">#fff</color>
     <color name="colorTextInverse">#000</color>
+
+    <color name="colorSnakeHead">#0d5b00</color>
+    <color name="colorSnakeTail">#0dbf00</color>
+    <color name="colorFruitApple">#f42727</color>
+    <color name="colorFruitRaspberry">#fa70ff</color>
+    <color name="colorFruitBlackberry">#010e23</color>
+    <color name="colorFruitCoconut">#512d03</color>
 </resources>
