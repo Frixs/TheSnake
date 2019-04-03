@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.frixs.zcu_kiv_mkz_seminar.R;
@@ -35,6 +37,10 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
     /** Previous positions. */
     private float prevPosX, prevPosY;
 
+    private TextView currentScore;
+    private TextView bestScore;
+    private Button restartBTN;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +48,6 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
 
         // Initialize the game activity.
         initialize();
-
         gameView.setOnTouchListener(this);
 
         // Start the game.
@@ -67,6 +72,11 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
 
         // FadeIn the game map after loading.
         gameView.animate().alpha(1.0f);
+
+        // Get layout items.
+        currentScore = (TextView) findViewById(R.id.currentScoreFieldTV);
+        bestScore = (TextView) findViewById(R.id.bestScoreFieldTV);
+        restartBTN = (Button) findViewById(R.id.restartBTN);
     }
 
     /**
@@ -140,6 +150,8 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
      */
     private void onGameOver() {
         Toast.makeText(this, "GAME OVER", Toast.LENGTH_SHORT).show();
+
+        restartBTN.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -154,7 +166,7 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
      * @param view
      */
     public void onClickControlUpBTN(View view) {
-        gameEngine.setDirection(Direction.North);
+        gameEngine.setDesiredDirection(Direction.North);
     }
 
     /**
@@ -162,7 +174,7 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
      * @param view
      */
     public void onClickControlRightBTN(View view) {
-        gameEngine.setDirection(Direction.East);
+        gameEngine.setDesiredDirection(Direction.East);
     }
 
     /**
@@ -170,7 +182,7 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
      * @param view
      */
     public void onClickControlDownBTN(View view) {
-        gameEngine.setDirection(Direction.South);
+        gameEngine.setDesiredDirection(Direction.South);
     }
 
     /**
@@ -178,7 +190,16 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
      * @param view
      */
     public void onClickControlLeftBTN(View view) {
-        gameEngine.setDirection(Direction.West);
+        gameEngine.setDesiredDirection(Direction.West);
+    }
+
+    /**
+     * On click event BTN.
+     * @param view
+     */
+    public void onClickRestartBTN(View view) {
+        finish();
+        startActivity(getIntent());
     }
 
     /**
@@ -202,19 +223,19 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
                     // LEFT - RIGHT directions.
                     if (newPosX > prevPosX) {
                         // RIGHT.
-                        gameEngine.setDirection(Direction.East);
+                        gameEngine.setDesiredDirection(Direction.East);
                     } else {
                         // LEFT.
-                        gameEngine.setDirection(Direction.West);
+                        gameEngine.setDesiredDirection(Direction.West);
                     }
                 } else {
                     // UP - DOWN directions.
                     if (newPosY > prevPosY) {
                         // DOWN.
-                        gameEngine.setDirection(Direction.South);
+                        gameEngine.setDesiredDirection(Direction.South);
                     } else {
                         // UP.
-                        gameEngine.setDirection(Direction.North);
+                        gameEngine.setDesiredDirection(Direction.North);
                     }
                 }
 

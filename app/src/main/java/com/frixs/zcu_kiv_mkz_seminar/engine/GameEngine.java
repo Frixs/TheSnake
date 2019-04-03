@@ -7,6 +7,7 @@ import com.frixs.zcu_kiv_mkz_seminar.enums.TileType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class GameEngine {
     public static final int mapWidth = 26;
@@ -14,10 +15,15 @@ public class GameEngine {
 
     private List<Coordinate> walls = new ArrayList<>();
     private List<Coordinate> snake = new ArrayList<>();
+    private List<Coordinate> fruit = new ArrayList<>();
 
     private Direction currentDirection = Direction.East;
+    private Direction desiredDirection = currentDirection;
 
     private GameState currentGameState = GameState.Running;
+
+    /** says if I can expand Snake's tail in the next update tick. */
+    private boolean expandSnakeTail = false;
 
     public GameEngine() {
     }
@@ -28,6 +34,8 @@ public class GameEngine {
     public void initGame() {
         addSnake();
         addWalls();
+
+        addFruit();
     }
 
     /**
@@ -35,6 +43,10 @@ public class GameEngine {
      * Check wall collisions.
      */
     public void update() {
+        if (checkDirection()) {
+            currentDirection = desiredDirection;
+        }
+
         switch (currentDirection) {
             case North:
                 updateSnake(0, -1);
@@ -50,36 +62,102 @@ public class GameEngine {
                 break;
         }
 
-        // Check Wall collisions.
+        // Check collisions.
         if (checkCollisions()) {
             currentGameState = GameState.GameOver;
         }
+
+        solveFruitCollisions();
     }
 
     /**
      * Set direction for the next move.
      * @param newDirection     The Direction.
      */
-    public void setDirection(Direction newDirection) {
-        if (Math.abs(newDirection.ordinal() - currentDirection.ordinal()) % 2 == 1) {
-            currentDirection = newDirection;
-        }
+    public void setDesiredDirection(Direction newDirection) {
+        desiredDirection = newDirection;
     }
 
     /**
-     * Check if Snake collides with the walls.
+     * Check if desired direction is valid.
+     * @return  TRU if yes, NO else.
+     */
+    private boolean checkDirection() {
+        if (Math.abs(desiredDirection.ordinal() - currentDirection.ordinal()) % 2 == 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if Snake collides with the walls or itself.
      *
-     * @return TRUE if Snake collides with the walls, FALSE if not.
+     * @return TRUE if Snake collides, FALSE if not.
      */
     private boolean checkCollisions() {
-        for (Coordinate c :
+        return checkWallCollisions(getSnakeHead()) || checkSnakeCollisions(getSnakeHead());
+    }
+
+    /**
+     * Check Wall collisions.
+     * @return  TRUE if collides, NO else.
+     */
+    private boolean checkWallCollisions(Coordinate c) {
+        for (Coordinate coord :
                 walls) {
-            if (snake.get(0).equals(c)) {
+            if (coord.equals(c)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * Check Snake collisions.
+     * @return  TRUE if collides, NO else
+     */
+    private boolean checkSnakeCollisions(Coordinate c) {
+        for (int i = 1; i < snake.size(); i++) {
+            if (snake.get(i).equals(c)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check Fruit collisions.
+     * @return  Collider or NUL if not collides.
+     */
+    private Coordinate checkFruitCollisions(Coordinate c) {
+        for (Coordinate f :
+                fruit) {
+            if (f.equals(c)) {
+                return f;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Check fruit collisions.
+     */
+    private void solveFruitCollisions() {
+        Coordinate fruitToRemove = null;
+        expandSnakeTail = false;
+
+        if ((fruitToRemove = checkFruitCollisions(getSnakeHead())) != null) {
+            expandSnakeTail = true;
+        }
+
+        if (fruitToRemove != null) {
+            fruit.remove(fruitToRemove);
+            addFruit();
+        }
     }
 
     /**
@@ -109,6 +187,11 @@ public class GameEngine {
                 walls) {
             map[wall.getX()][wall.getY()] = TileType.Wall;
         }
+//TODO
+        for (Coordinate c :
+                fruit) {
+            map[c.getX()][c.getY()] = TileType.Apple;
+        }
 
         return map;
     }
@@ -120,9 +203,17 @@ public class GameEngine {
      * @param y Coord Y
      */
     private void updateSnake(int x, int y) {
+        int newX = snake.get(snake.size() - 1).getX();
+        int newY = snake.get(snake.size() - 1).getY();
+
         for (int i = snake.size() - 1; i > 0; --i) {
             snake.get(i).setX(snake.get(i - 1).getX());
             snake.get(i).setY(snake.get(i - 1).getY());
+        }
+
+        if (expandSnakeTail) {
+            snake.add(new Coordinate(newX, newY));
+            expandSnakeTail = false;
         }
 
         snake.get(0).setX(snake.get(0).getX() + x);
@@ -159,6 +250,38 @@ public class GameEngine {
             walls.add(new Coordinate(0, y));
             walls.add(new Coordinate(mapWidth - 1, y));
         }
+    }
+
+    /**
+     * Add fruit to the game.
+     */
+    private void addFruit() {
+        Coordinate coord = null;
+        boolean unableToSpawn;
+        Random rn = new Random();
+
+        do {
+            unableToSpawn = false;
+
+            int x = rn.nextInt(mapWidth - 2) + 1;
+            int y = rn.nextInt(mapHeight - 2) + 1;
+
+            coord = new Coordinate(x, y);
+
+            if (checkSnakeCollisions(coord)) {
+                unableToSpawn = true;
+            }
+
+            if (checkFruitCollisions(coord) != null) {
+                unableToSpawn = true;
+            }
+        } while (unableToSpawn);
+
+        fruit.add(coord);
+    }
+
+    private Coordinate getSnakeHead() {
+        return snake.get(0);
     }
 
     public GameState getCurrentGameState() {
