@@ -2,16 +2,19 @@ package com.frixs.zcu_kiv_mkz_seminar.activities;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.frixs.zcu_kiv_mkz_seminar.R;
+import com.frixs.zcu_kiv_mkz_seminar.classes.Fruit;
 import com.frixs.zcu_kiv_mkz_seminar.classes.SharedData;
 import com.frixs.zcu_kiv_mkz_seminar.engine.GameEngine;
 import com.frixs.zcu_kiv_mkz_seminar.enums.Direction;
@@ -43,6 +46,7 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
     private TextView currentScoreTV;
     private TextView bestScoreTV;
     private Button restartBTN;
+    private LinearLayout activeActionBarLL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +84,7 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
         currentScoreTV = (TextView) findViewById(R.id.currentScoreFieldTV);
         bestScoreTV = (TextView) findViewById(R.id.bestScoreFieldTV);
         restartBTN = (Button) findViewById(R.id.restartBTN);
+        activeActionBarLL = (LinearLayout) findViewById(R.id.activeActionBar);
 
         // Initialize score to default values.
         currentScoreTV.setText("0");
@@ -138,6 +143,9 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
                 // Update game (1 step/tick in the game).
                 gameEngine.update();
 
+                // Update action bar GUI.
+                updateActiveActions();
+
                 // Keep updating if the game is running.
                 if (gameEngine.getCurrentGameState() == GameState.Running) {
                     gameTick = gameEngine.getGameTick();
@@ -179,6 +187,29 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
 
         // Show option to restart the game.
         restartBTN.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Update active actions in GUI.
+     */
+    private void updateActiveActions() {
+        activeActionBarLL.removeAllViews();
+
+        if (gameEngine.getActiveActions().size() > 0) {
+            activeActionBarLL.setPadding(30, 15, 30, 15);
+        } else {
+            activeActionBarLL.setPadding(0, 0, 0, 0);
+        }
+
+        for (int i = 0; i < gameEngine.getActiveActions().size(); i++) {
+            TextView actionIcon = new TextView(this);
+            actionIcon.setText("█ " + (gameEngine.getActiveActions().get(i).getActionDurationCounter() + 1));
+            actionIcon.setTextSize(16);
+            actionIcon.setTextColor(getResources().getColor(gameEngine.getActiveActions().get(i).getTileType().getColor()));
+            actionIcon.setPadding((i == 0 ? 0 : 15), 0, 0, 0);
+            actionIcon.setShadowLayer(10f, 4, 4, Color.BLACK);
+            activeActionBarLL.addView(actionIcon);
+        }
     }
 
     /**

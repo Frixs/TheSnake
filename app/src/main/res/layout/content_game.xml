@@ -87,6 +87,15 @@
         android:paddingRight="15dp"
         android:paddingBottom="15dp">
 
+        <LinearLayout
+            android:id="@+id/activeActionBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccentL2"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
         <android.support.constraint.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="wrap_content"
@@ -177,7 +186,7 @@
                 style="@android:style/Widget.Button.Inset"
                 android:layout_width="80dp"
                 android:layout_height="50dp"
-                android:layout_marginBottom="65dp"
+                android:layout_marginBottom="55dp"
                 android:onClick="onClickRestartBTN"
                 android:text="RESTART"
                 android:visibility="gone"

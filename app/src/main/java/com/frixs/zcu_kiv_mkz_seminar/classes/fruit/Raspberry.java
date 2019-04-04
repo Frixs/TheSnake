@@ -1,5 +1,6 @@
 package com.frixs.zcu_kiv_mkz_seminar.classes.fruit;
 
+import com.frixs.zcu_kiv_mkz_seminar.R;
 import com.frixs.zcu_kiv_mkz_seminar.classes.Coordinate;
 import com.frixs.zcu_kiv_mkz_seminar.classes.Fruit;
 import com.frixs.zcu_kiv_mkz_seminar.engine.GameEngine;
@@ -21,12 +22,12 @@ public class Raspberry extends Fruit {
 
     @Override
     public float getSpawnWeight() {
-        return 0.01f;
+        return 0.02f;
     }
 
     @Override
     protected int getActionDuration() {
-        return 6;
+        return 10;
     }
 
     @Override

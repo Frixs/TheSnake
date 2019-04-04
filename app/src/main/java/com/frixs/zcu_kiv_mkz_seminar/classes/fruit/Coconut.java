@@ -1,5 +1,6 @@
 package com.frixs.zcu_kiv_mkz_seminar.classes.fruit;
 
+import com.frixs.zcu_kiv_mkz_seminar.R;
 import com.frixs.zcu_kiv_mkz_seminar.classes.Coordinate;
 import com.frixs.zcu_kiv_mkz_seminar.classes.Fruit;
 import com.frixs.zcu_kiv_mkz_seminar.engine.GameEngine;
@@ -27,7 +28,7 @@ public class Coconut extends Fruit {
 
     @Override
     protected int getActionDuration() {
-        return 16;
+        return 20;
     }
 
     @Override

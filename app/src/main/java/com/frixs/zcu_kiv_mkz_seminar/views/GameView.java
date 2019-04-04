@@ -55,33 +55,14 @@ public class GameView extends View {
                 squarePadding = 2; // default;
 
                 // Tile type draw settings.
+                mPaint.setColor(ResourcesCompat.getColor(getResources(), viewMap[x][y].getColor(), null));
+
                 switch (viewMap[x][y]) {
-                    case None:
-                        mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorTileNone, null));
-                        break;
                     case Wall:
                         squarePadding = 0;
-                        mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorTileWall, null));
                         break;
-                    case SnakeHead:
-                        mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorSnakeHead, null));
-                        break;
-                    case SnakeTail:
-                        mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorSnakeTail, null));
-                        break;
-                    // FRUIT.
-                    case FruitApple:
-                        mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorFruitApple, null));
-                        break;
-                    case FruitRaspberry:
-                        mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorFruitRaspberry, null));
-                        break;
-                    case FruitBlackberry:
-                        mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorFruitBlackberry, null));
-                        break;
-                    case FruitCoconut:
-                        mPaint.setColor(ResourcesCompat.getColor(getResources(), R.color.colorFruitCoconut, null));
-                        break;
+                    default:
+                        ;
                 }
 
                 float x1 = x * tileSizeX + squarePadding;

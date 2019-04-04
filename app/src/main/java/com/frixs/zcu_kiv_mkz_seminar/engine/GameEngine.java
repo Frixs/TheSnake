@@ -3,6 +3,9 @@ package com.frixs.zcu_kiv_mkz_seminar.engine;
 import com.frixs.zcu_kiv_mkz_seminar.classes.Coordinate;
 import com.frixs.zcu_kiv_mkz_seminar.classes.Fruit;
 import com.frixs.zcu_kiv_mkz_seminar.classes.fruit.Apple;
+import com.frixs.zcu_kiv_mkz_seminar.classes.fruit.Blackberry;
+import com.frixs.zcu_kiv_mkz_seminar.classes.fruit.Coconut;
+import com.frixs.zcu_kiv_mkz_seminar.classes.fruit.Raspberry;
 import com.frixs.zcu_kiv_mkz_seminar.enums.Direction;
 import com.frixs.zcu_kiv_mkz_seminar.enums.GameState;
 import com.frixs.zcu_kiv_mkz_seminar.enums.TileType;
@@ -37,7 +40,7 @@ public class GameEngine {
     /** Spawnable fruit - useless dummy fruit. */
     private Fruit[] spawnableFruit = null;
     /** Fruit actions which are executed during game ticks. */
-    private ArrayList<Fruit> activeActions = null;
+    private List<Fruit> activeActions = null;
 
     /** GameTick modifier. */
     private final int gameTickModifierDefVal = 0;
@@ -51,6 +54,7 @@ public class GameEngine {
 
     public GameEngine() {
         calculateDifficulty();
+        activeActions = new ArrayList<>();
     }
 
     /**
@@ -87,16 +91,15 @@ public class GameEngine {
         }
 
         // Solve actions.
-        for (Fruit action :
-                activeActions) {
-            if (action.getActionDurationCounter() == 0) {
-                action.removeAction(this);
-                activeActions.remove(action);
+        for (int i = activeActions.size() - 1; i >= 0; i--) {
+            if (activeActions.get(i).getActionDurationCounter() == 0) {
+                activeActions.get(i).removeAction(this);
+                activeActions.remove(activeActions.get(i));
                 continue;
             }
 
-            action.setActionDurationCounter(
-                    action.getActionDurationCounter() - 1
+            activeActions.get(i).setActionDurationCounter(
+                    activeActions.get(i).getActionDurationCounter() - 1
             );
         }
 
@@ -191,7 +194,7 @@ public class GameEngine {
      * @return  TRUE if collides, NO else
      */
     private boolean checkSnakeCollisions(Coordinate c) {
-        if (isSnakeCollidable) {
+        if (!isSnakeCollidable) {
             return false;
         }
 
@@ -228,7 +231,9 @@ public class GameEngine {
 
         if ((triggeredFruit = checkFruitCollisions(getSnakeHead())) != null) {
             triggeredFruit.applyAction(this);
-            activeActions.add(triggeredFruit);
+            if (triggeredFruit.getTileType() != TileType.FruitApple) {
+                activeActions.add(triggeredFruit);
+            }
         }
 
         if (triggeredFruit != null) {
@@ -365,6 +370,10 @@ public class GameEngine {
                 // Spawn the item.
                 Fruit newFruit = null;
 
+                if (spawnableFruit[i].getTileType() == TileType.None) {
+                    return;
+                }
+
                 try {
                     Class clazz = Class.forName(spawnableFruit[i].getClass().getName());
                     Constructor constructor = clazz.getConstructor(Coordinate.class);
@@ -486,5 +495,9 @@ public class GameEngine {
 
     public void setSnakeTailExpandable(boolean snakeTailExpandable) {
         isSnakeTailExpandable = snakeTailExpandable;
+    }
+
+    public List<Fruit> getActiveActions() {
+        return activeActions;
     }
 }
