@@ -1,6 +1,7 @@
 package com.frixs.zcu_kiv_mkz_seminar.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
@@ -265,8 +266,8 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
      * @param view
      */
     public void onClickLeaveBTN(View view) {
-        Toast.makeText(this, "LEAVE BTN", Toast.LENGTH_SHORT).show();
-        // TODO;
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
     }
 
     @Override

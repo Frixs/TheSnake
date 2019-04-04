@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">zcu_kiv_mkz_seminar</string>
+    <string name="app_name">The Snake</string>
+    <string name="copyright">Created by Tomas Frixs</string>
 </resources>
