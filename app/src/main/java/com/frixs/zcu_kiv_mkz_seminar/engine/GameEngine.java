@@ -26,8 +26,8 @@ public class GameEngine {
 
     private GameState currentGameState = GameState.Running;
 
-    /** says if I can expand Snake's tail in the next update tick. */
-    private boolean expandSnakeTail = false;
+    /** Says if I can expand Snake's tail in the next update tick. */
+    private boolean isSnakeTailExpandable = false;
     /** Game score counter. */
     private int score = 0;
     /** Game tick in milliseconds. */
@@ -36,6 +36,18 @@ public class GameEngine {
     private float fruitSpawnWeight = 0;
     /** Spawnable fruit - useless dummy fruit. */
     private Fruit[] spawnableFruit = null;
+    /** Fruit actions which are executed during game ticks. */
+    private ArrayList<Fruit> activeActions = null;
+
+    /** GameTick modifier. */
+    private final int gameTickModifierDefVal = 0;
+    private int gameTickModifier = gameTickModifierDefVal;
+    /** Multiply the chance of fruit spawn. Default val.: 1 */
+    private final int spawnChanceMultiplierDefVal = 1;
+    private int spawnChanceMultiplier = spawnChanceMultiplierDefVal;
+    /** If tha snake can go over its tail or not. TRUE: Snake cannot go through, FALSE else. */
+    private final boolean isSnakeCollidableDefVal = true;
+    private boolean isSnakeCollidable = isSnakeCollidableDefVal;
 
     public GameEngine() {
         calculateDifficulty();
@@ -47,7 +59,6 @@ public class GameEngine {
     public void initGame() {
         addSnake();
         addWalls();
-
         addFruit();
     }
 
@@ -73,6 +84,20 @@ public class GameEngine {
             case West:
                 updateSnake(-1, 0);
                 break;
+        }
+
+        // Solve actions.
+        for (Fruit action :
+                activeActions) {
+            if (action.getActionDurationCounter() == 0) {
+                action.removeAction(this);
+                activeActions.remove(action);
+                continue;
+            }
+
+            action.setActionDurationCounter(
+                    action.getActionDurationCounter() - 1
+            );
         }
 
         // Check collisions.
@@ -166,6 +191,10 @@ public class GameEngine {
      * @return  TRUE if collides, NO else
      */
     private boolean checkSnakeCollisions(Coordinate c) {
+        if (isSnakeCollidable) {
+            return false;
+        }
+
         for (int i = 1; i < snake.size(); i++) {
             if (snake.get(i).equals(c)) {
                 return true;
@@ -194,20 +223,19 @@ public class GameEngine {
      * Check fruit collisions.
      */
     private void solveFruitCollisions() {
-        Fruit fruitToRemove = null;
-        expandSnakeTail = false;
+        Fruit triggeredFruit = null;
+        isSnakeTailExpandable = false;
 
-        if ((fruitToRemove = checkFruitCollisions(getSnakeHead())) != null) {
-            if (fruitToRemove.getTileType() == TileType.FruitApple) {
-                expandSnakeTail = true;
-                score++;
-            }
-            // TODO: Add functionality for the rest of the items.
+        if ((triggeredFruit = checkFruitCollisions(getSnakeHead())) != null) {
+            triggeredFruit.applyAction(this);
+            activeActions.add(triggeredFruit);
         }
 
-        if (fruitToRemove != null) {
-            fruit.remove(fruitToRemove);
-            addFruit();
+        if (triggeredFruit != null) {
+            fruit.remove(triggeredFruit);
+            if (triggeredFruit.isReproductive()) {
+                addFruit();
+            }
         }
     }
 
@@ -266,9 +294,9 @@ public class GameEngine {
             snake.get(i).setY(snake.get(i - 1).getY());
         }
 
-        if (expandSnakeTail) {
+        if (isSnakeTailExpandable) {
             snake.add(new Coordinate(newX, newY));
-            expandSnakeTail = false;
+            isSnakeTailExpandable = false;
         }
 
         snake.get(0).setX(snake.get(0).getX() + x);
@@ -311,7 +339,9 @@ public class GameEngine {
      * Add fruit to the game.
      */
     private void addFruit() {
-        fruit.add(new Apple(getFreeCoordination()));
+        Fruit newFruit = new Apple(getFreeCoordination());
+        newFruit.setReproductive(true);
+        fruit.add(newFruit);
 
         spawnSpecialFruit();
     }
@@ -395,7 +425,11 @@ public class GameEngine {
         float total = 0;
 
         for (int i = 0; i < list.length; i++) {
-            total += list[i].getSpawnWeight(); // Float is 6 digit at max.
+            if (list[i].getTileType() == TileType.None) {
+                total += list[i].getSpawnWeight();
+            } else {
+                total += list[i].getSpawnWeight() * spawnChanceMultiplier;
+            }
         }
 
         fruitSpawnWeight = total;
@@ -410,11 +444,47 @@ public class GameEngine {
         return score;
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     public GameState getCurrentGameState() {
         return currentGameState;
     }
 
     public int getGameTick() {
-        return gameTick;
+        return gameTick + gameTickModifier;
+    }
+
+    public int getSpawnChanceMultiplier() {
+        return spawnChanceMultiplier;
+    }
+
+    public void setSpawnChanceMultiplier(int spawnChanceMultiplier) {
+        this.spawnChanceMultiplier = spawnChanceMultiplier;
+    }
+
+    public boolean isSnakeCollidable() {
+        return isSnakeCollidable;
+    }
+
+    public void setSnakeCollidable(boolean snakeCollidable) {
+        isSnakeCollidable = snakeCollidable;
+    }
+
+    public int getGameTickModifier() {
+        return gameTickModifier;
+    }
+
+    public void setGameTickModifier(int gameTickModifier) {
+        this.gameTickModifier = gameTickModifier;
+    }
+
+    public boolean isSnakeTailExpandable() {
+        return isSnakeTailExpandable;
+    }
+
+    public void setSnakeTailExpandable(boolean snakeTailExpandable) {
+        isSnakeTailExpandable = snakeTailExpandable;
     }
 }

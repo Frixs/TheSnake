@@ -5,10 +5,16 @@ import com.frixs.zcu_kiv_mkz_seminar.classes.fruit.Blackberry;
 import com.frixs.zcu_kiv_mkz_seminar.classes.fruit.Coconut;
 import com.frixs.zcu_kiv_mkz_seminar.classes.fruit.NoSpawn;
 import com.frixs.zcu_kiv_mkz_seminar.classes.fruit.Raspberry;
+import com.frixs.zcu_kiv_mkz_seminar.engine.GameEngine;
 import com.frixs.zcu_kiv_mkz_seminar.enums.TileType;
 
 public abstract class Fruit {
+    /** Coordinate in the game map. */
     private Coordinate coordinate;
+    /** Says if another item should spawn after consuming this one. */
+    private boolean isReproductive = false;
+    /** GameTick counter of the action. */
+    private int actionDurationCounter;
 
     /**
      * Get TileType of the fruit.
@@ -22,8 +28,24 @@ public abstract class Fruit {
      */
     public abstract float getSpawnWeight();
 
+    /** Get Duration of an action. */
+    protected abstract int getActionDuration();
+
+    /**
+     * Event representing the fruit.
+     * @param gameEngine    GameEngine of the game.
+     */
+    public abstract void applyAction(GameEngine gameEngine);
+
+    /**
+     * Revert the event representing the fruit.
+     * @param gameEngine    GameEngine of the game.
+     */
+    public abstract void removeAction(GameEngine gameEngine);
+
     public Fruit(Coordinate coordinate) {
         this.coordinate = coordinate;
+        actionDurationCounter = getActionDuration();
     }
 
     /**
@@ -44,7 +66,23 @@ public abstract class Fruit {
         return coordinate;
     }
 
+    public boolean isReproductive() {
+        return isReproductive;
+    }
+
+    public void setReproductive(boolean reproductive) {
+        isReproductive = reproductive;
+    }
+
     public void setCoordinate(Coordinate coordinate) {
         this.coordinate = coordinate;
+    }
+
+    public int getActionDurationCounter() {
+        return actionDurationCounter;
+    }
+
+    public void setActionDurationCounter(int actionDurationCounter) {
+        this.actionDurationCounter = actionDurationCounter;
     }
 }
