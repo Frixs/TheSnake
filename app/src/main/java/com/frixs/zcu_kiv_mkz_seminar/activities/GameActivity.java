@@ -40,6 +40,8 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
     private final int countdownIter = 3;
     /** Countdown iteration recorded. */
     private int countdownIterCounter = countdownIter;
+    /** Says if the game is paused. If yes the game will stop updating. */
+    private boolean isGamePaused = false;
 
     /** Previous positions. */
     private float prevPosX, prevPosY;
@@ -128,7 +130,9 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
 
                     --countdownIterCounter;
 
-                    startGameCountdown();
+                    if (!isGamePaused) {
+                        startGameCountdown();
+                    }
                 }
             }
         }, countdownTick);
@@ -150,7 +154,9 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
                 // Keep updating if the game is running.
                 if (gameEngine.getCurrentGameState() == GameState.Running) {
                     gameTick = gameEngine.getGameTick();
-                    handler.postDelayed(this, gameTick);
+                    if (!isGamePaused) {
+                        handler.postDelayed(this, gameTick);
+                    }
                 }
 
                 // GameOver things to do...
@@ -266,6 +272,7 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
      * @param view
      */
     public void onClickLeaveBTN(View view) {
+        isGamePaused = true;
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
     }

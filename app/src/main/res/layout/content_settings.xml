@@ -4,11 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:orientation="vertical"
-    tools:context=".activities.MainActivity"
-    tools:showIn="@layout/activity_main">
-
+    tools:context=".activities.SettingsActivity"
+    tools:showIn="@layout/activity_settings">
 
     <ImageView
         android:id="@+id/imageView4"
@@ -31,8 +29,8 @@
         android:layout_marginRight="15dp"
         android:layout_marginBottom="415dp"
         android:fontFamily="sans-serif"
-        android:text="@string/app_name"
-        android:textSize="42sp"
+        android:text="SETTINGS"
+        android:textSize="28sp"
         android:shadowColor="@color/colorAccent"
         android:shadowRadius="1.5"
         android:shadowDx="5"
@@ -47,7 +45,7 @@
 
     <Button
         style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="125dp"
+        android:layout_width="wrap_content"
         android:layout_height="80dp"
         android:layout_marginStart="15dp"
         android:layout_marginLeft="15dp"
@@ -55,27 +53,8 @@
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginBottom="200dp"
-        android:onClick="onClickPlayBTN"
-        android:text="PLAY"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="175dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="40dp"
-        android:onClick="onClickSettingsBTN"
-        android:text="SETTINGS"
+        android:onClick="onClickResetScoreBTN"
+        android:text="RESET HIGH SCORE"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -93,31 +72,13 @@
         android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginBottom="15dp"
-        android:onClick="onClickQuitBTN"
-        android:text="QUIT"
+        android:onClick="onClickBackToMainBTN"
+        android:text="BACK"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginBottom="15dp"
-        android:shadowColor="@color/colorPrimaryDark"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="0.5"
-        android:text="@string/copyright"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
