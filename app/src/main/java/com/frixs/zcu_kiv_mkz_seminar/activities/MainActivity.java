@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickQuitBTN(View view) {
-        // TODO;
+        finish();
+        moveTaskToBack(true);
+        System.exit(0);
     }
 }
