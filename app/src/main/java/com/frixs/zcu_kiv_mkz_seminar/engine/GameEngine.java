@@ -1,11 +1,9 @@
 package com.frixs.zcu_kiv_mkz_seminar.engine;
 
+import com.frixs.zcu_kiv_mkz_seminar.activities.GameActivity;
 import com.frixs.zcu_kiv_mkz_seminar.classes.Coordinate;
 import com.frixs.zcu_kiv_mkz_seminar.classes.Fruit;
 import com.frixs.zcu_kiv_mkz_seminar.classes.fruit.Apple;
-import com.frixs.zcu_kiv_mkz_seminar.classes.fruit.Blackberry;
-import com.frixs.zcu_kiv_mkz_seminar.classes.fruit.Coconut;
-import com.frixs.zcu_kiv_mkz_seminar.classes.fruit.Raspberry;
 import com.frixs.zcu_kiv_mkz_seminar.enums.Direction;
 import com.frixs.zcu_kiv_mkz_seminar.enums.GameState;
 import com.frixs.zcu_kiv_mkz_seminar.enums.TileType;
@@ -29,26 +27,44 @@ public class GameEngine {
 
     private GameState currentGameState = GameState.Running;
 
-    /** Says if I can expand Snake's tail in the next update tick. */
+    /**
+     * Says if I can expand Snake's tail in the next update tick.
+     */
     private boolean isSnakeTailExpandable = false;
-    /** Game score counter. */
+    /**
+     * Game score counter.
+     */
     private int score = 0;
-    /** Game tick in milliseconds. */
+    /**
+     * Game tick in milliseconds.
+     */
     private int gameTick = 0;
-    /** Range in which the spawn chance is calculated. */
+    /**
+     * Range in which the spawn chance is calculated.
+     */
     private float fruitSpawnWeight = 0;
-    /** Spawnable fruit - useless dummy fruit. */
+    /**
+     * Spawnable fruit - useless dummy fruit.
+     */
     private Fruit[] spawnableFruit = null;
-    /** Fruit actions which are executed during game ticks. */
+    /**
+     * Fruit actions which are executed during game ticks.
+     */
     private List<Fruit> activeActions = null;
 
-    /** GameTick modifier. */
+    /**
+     * GameTick modifier.
+     */
     private final int gameTickModifierDefVal = 0;
     private int gameTickModifier = gameTickModifierDefVal;
-    /** Multiply the chance of fruit spawn. Default val.: 1 */
+    /**
+     * Multiply the chance of fruit spawn. Default val.: 1
+     */
     private final int spawnChanceMultiplierDefVal = 1;
     private int spawnChanceMultiplier = spawnChanceMultiplierDefVal;
-    /** If tha snake can go over its tail or not. TRUE: Snake cannot go through, FALSE else. */
+    /**
+     * If tha snake can go over its tail or not. TRUE: Snake cannot go through, FALSE else.
+     */
     private final boolean isSnakeCollidableDefVal = true;
     private boolean isSnakeCollidable = isSnakeCollidableDefVal;
 
@@ -106,6 +122,7 @@ public class GameEngine {
         // Check collisions.
         if (checkCollisions()) {
             currentGameState = GameState.GameOver;
+
         }
 
         solveFruitCollisions();
@@ -147,7 +164,8 @@ public class GameEngine {
 
     /**
      * Set direction for the next move.
-     * @param newDirection     The Direction.
+     *
+     * @param newDirection The Direction.
      */
     public void setDesiredDirection(Direction newDirection) {
         desiredDirection = newDirection;
@@ -155,7 +173,8 @@ public class GameEngine {
 
     /**
      * Check if desired direction is valid.
-     * @return  TRU if yes, NO else.
+     *
+     * @return TRU if yes, NO else.
      */
     private boolean checkDirection() {
         if (Math.abs(desiredDirection.ordinal() - currentDirection.ordinal()) % 2 == 1) {
@@ -176,7 +195,8 @@ public class GameEngine {
 
     /**
      * Check Wall collisions.
-     * @return  TRUE if collides, NO else.
+     *
+     * @return TRUE if collides, NO else.
      */
     private boolean checkWallCollisions(Coordinate c) {
         for (Coordinate coord :
@@ -191,7 +211,8 @@ public class GameEngine {
 
     /**
      * Check Snake collisions.
-     * @return  TRUE if collides, NO else
+     *
+     * @return TRUE if collides, NO else
      */
     private boolean checkSnakeCollisions(Coordinate c) {
         if (!isSnakeCollidable) {
@@ -209,7 +230,8 @@ public class GameEngine {
 
     /**
      * Check Fruit collisions.
-     * @return  Collider or NUL if not collides.
+     *
+     * @return Collider or NUL if not collides.
      */
     private Fruit checkFruitCollisions(Coordinate c) {
         for (Fruit f :
@@ -241,6 +263,7 @@ public class GameEngine {
             if (triggeredFruit.isReproductive()) {
                 addFruit();
             }
+            GameActivity.fruitSFX.start();
         }
     }
 
@@ -399,7 +422,8 @@ public class GameEngine {
 
     /**
      * Get free coordination in the game map.
-     * @return      Free Coordination.
+     *
+     * @return Free Coordination.
      */
     private Coordinate getFreeCoordination() {
         Coordinate coord = null;

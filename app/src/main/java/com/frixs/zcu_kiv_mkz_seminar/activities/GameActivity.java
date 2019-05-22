@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.frixs.zcu_kiv_mkz_seminar.R;
-import com.frixs.zcu_kiv_mkz_seminar.classes.Fruit;
 import com.frixs.zcu_kiv_mkz_seminar.classes.SharedData;
 import com.frixs.zcu_kiv_mkz_seminar.engine.GameEngine;
 import com.frixs.zcu_kiv_mkz_seminar.enums.Direction;
@@ -46,6 +46,11 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
     /** Previous positions. */
     private float prevPosX, prevPosY;
 
+    private MediaPlayer backgroundMusic;
+    public static MediaPlayer deathSFX;
+    public static MediaPlayer fruitSFX;
+    public static MediaPlayer specialSFX;
+
     private TextView currentScoreTV;
     private TextView bestScoreTV;
     private Button restartBTN;
@@ -62,6 +67,14 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
 
         // Start the game.
         start();
+
+        backgroundMusic = MediaPlayer.create(this, R.raw.game_music);
+        backgroundMusic.setLooping(true);
+        backgroundMusic.start();
+
+        deathSFX = MediaPlayer.create(this, R.raw.death);
+        fruitSFX = MediaPlayer.create(this, R.raw.apple);
+        specialSFX = MediaPlayer.create(this, R.raw.special);
     }
 
     /**
@@ -192,6 +205,8 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
             editor.apply();
         }
 
+        deathSFX.start();
+
         // Show option to restart the game.
         restartBTN.setVisibility(View.VISIBLE);
     }
@@ -273,6 +288,11 @@ public class GameActivity extends AppCompatActivity implements View.OnTouchListe
      */
     public void onClickLeaveBTN(View view) {
         isGamePaused = true;
+
+        backgroundMusic.stop();
+        backgroundMusic.release();
+        backgroundMusic = null;
+
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
     }
