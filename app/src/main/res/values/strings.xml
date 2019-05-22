@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">The Snake</string>
     <string name="copyright">Developed by Tomas Frixs</string>
-    <string name="version">v1.0</string>
+    <string name="version">v1.1</string>
 </resources>
